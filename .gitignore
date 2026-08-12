@@ -1,0 +1,46 @@
+# -*- mode: gitignore -*-
+
+### Emacs runtime noise ###
+auto-save-list/
+*.el~
+\#*\#
+.\#*
+*.elc
+*.eln
+eln-cache/
+server/
+tramp
+recentf
+savehist
+saveplace
+bookmarks
+.cache/
+transient/
+eshell/
+history
+places
+url/
+newsticker/
+tree-sitter/
+
+### Backups / custom file (if inside repo) ###
+backups/
+*.bak
+*.tmp
+custom.el
+.emacs.custom.el
+
+### Native comp cache ###
+comp/
+*.eln
+
+### Straight.el — ignore rebuildable dirs, keep the lockfile ###
+straight/repos/
+straight/build/
+straight/modified/
+straight/cache/
+straight/recipes/
+straight/bootstrap.el
+straight/versions/.lock
+straight/versions/*/
+!straight/versions/default.el
