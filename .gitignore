@@ -1,5 +1,8 @@
 # -*- mode: gitignore -*-
 
+games/
+projects 
+
 ### Emacs runtime noise ###
 auto-save-list/
 *.el~
@@ -23,6 +26,7 @@ url/
 newsticker/
 tree-sitter/
 
+
 ### Backups / custom file (if inside repo) ###
 backups/
 *.bak
@@ -35,6 +39,7 @@ comp/
 *.eln
 
 ### Straight.el — ignore rebuildable dirs, keep the lockfile ###
+straight/build-cache.el
 straight/repos/
 straight/build/
 straight/modified/
