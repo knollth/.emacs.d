@@ -25,13 +25,34 @@
 
 (straight-use-package 'kdl-mode)
 
+;; ----- yaml -----
 (straight-use-package 'yaml-pro)
-(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
-(add-hook 'yaml-ts-mode-hook #'yaml-pro-ts-mode)
+(straight-use-package 'yaml-mode)
+
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+(add-hook 'yaml-ts-mode-hook
+	  (lambda ()
+	    (yaml-pro-ts-mode)
+	    (require 'yaml-mode)
+	    (setq-local indent-line-function #'yaml-indent-line)))
+
+	    
+
 (add-to-list 'treesit-language-source-alist
              '(yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
 
+(with-eval-after-load 'yaml-ts-mode
+  (setopt yaml-ts-mode-indent-offset 2))
+
+(my/eglot-add-server 'yaml-ts-mode '("yaml-language-server" "--stdio"))
+;; ----- yaml (end) -----
+
 (straight-use-package 'just-ts-mode)
+(add-to-list 'treesit-language-source-alist
+             '(yaml "https://github.com/casey/tree-sitter-just"))
+
+
+
 (straight-use-package 'dockerfile-mode)
 
 ;; -------------------- Haskell -----------------------
