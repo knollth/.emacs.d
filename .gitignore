@@ -1,5 +1,7 @@
 # -*- mode: gitignore -*-
 
+org-roam.db
+
 games/
 projects 
 
