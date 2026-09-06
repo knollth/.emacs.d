@@ -49,7 +49,7 @@
 
 (straight-use-package 'just-ts-mode)
 (add-to-list 'treesit-language-source-alist
-             '(yaml "https://github.com/casey/tree-sitter-just"))
+             '(just "https://github.com/casey/tree-sitter-just"))
 
 
 
