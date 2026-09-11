@@ -70,8 +70,10 @@
 
 (straight-use-package 'org-roam)
 (straight-use-package 'denote)
-(straight-use-package
- '(denote-roam :type git :host github :repo "knollth/denote-roam"))
+(straight-use-package'(denote-roam
+		       :type git
+		       :host github
+		       :repo "knollth/denote-roam"))
 
 
 (with-eval-after-load 'org-roam
