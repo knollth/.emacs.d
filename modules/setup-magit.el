@@ -2,6 +2,8 @@
 
 (straight-use-package 'magit)
 
+(setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+
 (keymap-global-set "C-x g" #'magit-status)
 (keymap-global-set "C-x M-g" #'magit-dispatch)
 
