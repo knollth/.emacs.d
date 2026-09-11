@@ -118,6 +118,16 @@
 (setq c-ts-mode-indent-offset 8
       c-ts-mode-indent-style 'linux)
 
+;; -------------------- Markdown -----------------------
+(straight-use-package 'markdown-mode)
+
+(add-to-list 'auto-mode-alist '("\\.\\(?:md\\|markdown\\)\\'" . gfm-mode))
+(with-eval-after-load 'markdown-mode
+  ;; Font-lock code blocks using their language's own mode (huge readability win)
+  (setopt markdown-fontify-code-blocks-natively t)
+   (setopt markdown-enable-math t))
+
+
 ;; -------------------- Typst -----------------------
 
 (straight-use-package
