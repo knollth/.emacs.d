@@ -12,6 +12,6 @@
 
 (add-hook 'after-init-hook
           (lambda ()
-            (load-theme 'ef-spring t)))
+            (load-theme 'modus-vivendi t)))
 
 (provide 'ui-theme)
