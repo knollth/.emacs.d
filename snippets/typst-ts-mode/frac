@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: fraction
+# key: frac
+# condition: (my/typst-math-p)
+# --
+($1)/($2)$0

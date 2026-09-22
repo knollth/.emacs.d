@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: piecewise cases
+# key: cas
+# --
+\[
+$1 = \begin{cases}
+$2, & \text{if } $3 \\\\
+$4, & \text{if } $5
+\end{cases}
+\]
+$0

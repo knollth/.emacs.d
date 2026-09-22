@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Set
+# key: st
+# condition: (org-inside-LaTeX-fragment-p)
+# expand-env: ((require-final-newline nil))
+# --
+\\{ $1 \\}$0

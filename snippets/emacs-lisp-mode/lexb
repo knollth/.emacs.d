@@ -1,0 +1,4 @@
+# key: lexb
+# name: lexical binding header
+# --
+;;; -*- lexical-binding: t; -*-

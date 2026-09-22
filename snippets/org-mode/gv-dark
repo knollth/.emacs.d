@@ -1,0 +1,27 @@
+# -*- mode: snippet -*-
+# name: Graphviz Universal Dark
+# key: gv-dark
+# --
+#+begin_src dot :file ${1:sim_output}.png :cmdline -Kdot -Tpng -Gdpi=300
+digraph G {
+    // Canvas Settings
+    bgcolor="transparent";
+    rankdir="${2:LR}"; // Use LR for Automata, TB for Hierarchies
+    pad="0.3";
+    nodesep="0.5";
+    ranksep="0.5";
+
+    // Global Node Style (Dark Mode Optimized)
+    node [fontname="sans-serif", fontsize=11, shape=box, style="filled,rounded", 
+          color="#eeeeee", fontcolor="#eeeeee", fillcolor="#2c3e50", penwidth=1.5];
+
+    // Global Edge Style
+    edge [fontname="sans-serif", fontsize=9, color="#bbbbbb", fontcolor="#bbbbbb", 
+          arrowhead=vee, arrowsize=0.8];
+
+    // Node Definitions (e.g., State1 [shape=circle])
+    $0
+
+    // Edge Definitions (e.g., State1 -> State2 [label="input"])
+}
+#+end_src

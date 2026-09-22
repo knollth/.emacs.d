@@ -1,0 +1,5 @@
+# name: partial
+# key: pd
+# condition: (my/typst-math-p)
+# --
+(diff ${1:f})/(diff ${2:x})$0

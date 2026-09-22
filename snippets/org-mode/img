@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: img
+# name: org image (latex figure, pinned)
+# --
+#+CAPTION: ${1:caption}
+#+NAME: fig:${2:label}
+#+ATTR_LATEX: :width ${3:0.5}\\linewidth :placement [${4:H}]
+[[./img/${5:name}.${6:png}]]
+$0

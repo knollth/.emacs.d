@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: University Class Timestamp
+# key: ots
+# --
+<${1:`(format-time-string "%Y-%m-%d" (current-time))`} ${1:$(ignore-errors (format-time-string "%a" (org-time-string-to-time yas-text)))} ${2:13:45}-${3:15:15} +${4:1w}>$0

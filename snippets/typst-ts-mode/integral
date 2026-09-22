@@ -1,0 +1,5 @@
+# name: integral
+# key: int
+# condition: (my/typst-math-p)
+# --
+integral_(${1:a})^(${2:b}) $0 dif ${3:x}
