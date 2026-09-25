@@ -27,6 +27,7 @@ places
 url/
 newsticker/
 tree-sitter/
+org-persist/
 
 
 ### Backups / custom file (if inside repo) ###

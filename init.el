@@ -30,11 +30,13 @@
 (require 'setup-meow)
 (require 'completion)
 (require 'setup-magit)
-(require 'setup-org)
 (require 'languages)
 
 ;; UI
 (add-to-list 'load-path (expand-file-name "modules/ui" user-emacs-directory))
 (require 'ui-init)
+
+;; Notes (org, denote, org-roam, denote-roam)
+(require 'setup-notes)
 
 (provide 'init)
