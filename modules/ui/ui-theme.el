@@ -12,6 +12,6 @@
 
 (add-hook 'after-init-hook
           (lambda ()
-            (load-theme 'modus-vivendi t)))
+            (load-theme 'modus-operandi t)))
 
 (provide 'ui-theme)
