@@ -13,6 +13,55 @@
 ;; keys are bound to autoloaded commands.  The whole stack (org,
 ;; denote, org-roam, denote-roam) loads on first use.
 
+;; ================ Paths (all derived from $ORG) ================
+
+(defconst my/org-root
+  (file-name-as-directory
+   (expand-file-name (or (getenv "ORG") "~/org")))
+  "Org root directory, taken from $ORG (falls back to ~/org).")
+
+(defconst my/notes-dir       (file-name-concat my/org-root "notes/"))
+(defconst my/journal-dir     (file-name-concat my/notes-dir "journal/"))
+(defconst my/assets-dir      (file-name-concat my/notes-dir "assets/"))
+(defconst my/attachments-dir (file-name-concat my/notes-dir "attachments/"))
+
+(dolist (dir (list my/notes-dir
+		   my/journal-dir
+                   my/assets-dir
+		   my/attachments-dir))
+  (make-directory dir t))
+
+;; ================ Keybindings (autoloaded, load on first press) ================
+
+(keymap-global-set "C-c l" #'org-latex-preview)
+(keymap-global-set "C-c n j" #'denote-journal-new-or-existing-entry)
+(keymap-global-set "C-c n i" #'denote-roam-insert-or-create-node)
+(keymap-global-set "C-c n o" #'denote-roam-find-or-create-node)
+(keymap-global-set "C-c n u" #'denote-roam-dired-unlinked)
+
+
+;; ================ Helpers ================
+
+(defun my/org-snip ()
+  "Snip a screen region with slurp+grim and insert it as an image link.
+When the tools are missing or fail (e.g. GNOME's compositor lacks
+wlr-screencopy), fall back gracefully: use your desktop snip tool and
+paste with \\[yank-media] (C-c n p) instead."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in an org buffer"))
+  (let ((path (file-name-concat
+	       my/assets-dir
+               (format-time-string "clipboard-%Y%m%dT%H%M%S.png"))))
+    (if (and (executable-find "grim") (executable-find "slurp")
+             (= 0 (call-process "sh" nil nil nil "-c"
+                    (format "grim -g \"$(slurp)\" %s"
+                            (shell-quote-argument path)))))
+        (progn (insert (org-link-make-string (concat "file:" path)))
+               (org-display-inline-images))
+      (message "snip unavailable here - use your desktop snip tool, then C-c n p"))))
+
+
 ;; ================ Install (no loading) ================
 
 (straight-use-package
@@ -47,31 +96,25 @@
 (straight-use-package
  '(denote-roam :type git :host github :repo "knollth/denote-roam"))
 
-;; ================ Dirs (recreate on fresh machines) ================
-
-(dolist (dir '("~/org/notes" "~/org/notes/journal" "~/org/notes/attachments"))
-  (unless (file-directory-p dir)
-    (make-directory dir t)))
-
 ;; ================ Options (set BEFORE anything loads) ================
 
-(setopt org-directory "~/org"
+(setopt org-directory my/org-root
         org-edit-src-content-indentation 1
         org-export-babel-evaluate nil
         org-image-actual-width nil
         ;; denote
-        denote-directory "~/org/notes/"
+        denote-directory my/notes-dir
         denote-known-keywords '("emacs" "work" "idea" "math" "uni")
         denote-infer-keywords t
         denote-sort-keywords t
         denote-prompts '(title keywords)
         ;; dailies (denote-journal): subdir of denote-directory; denote-roam
         ;; skips :ID: insertion there, so dailies never enter the roam graph
-        denote-journal-directory "~/org/notes/journal/"
+        denote-journal-directory my/journal-dir
         ;; denote-roam / org-roam (db path pinned: org-roam derives it
         ;; from `org-roam-directory' at load time, so set it explicitly)
-        denote-roam-directory "~/org/notes/"
-        org-roam-db-location "~/org/notes/org-roam.db")
+        denote-roam-directory my/notes-dir
+        org-roam-db-location (file-name-concat my/notes-dir "org-roam.db"))
 
 ;; ================ First-use activation ================
 
@@ -84,26 +127,6 @@
   (org-roam-db-autosync-mode 1)
   (org-roam-db-sync))
 
-;; ================ Helpers ================
-
-(defun my/org-snip ()
-  "Snip a screen region with slurp+grim and insert it as an image link.
-When the tools are missing or fail (e.g. GNOME's compositor lacks
-wlr-screencopy), fall back gracefully: use your desktop snip tool and
-paste with \\[yank-media] (C-c n p) instead."
-  (interactive)
-  (unless (derived-mode-p 'org-mode)
-    (user-error "Not in an org buffer"))
-  (let ((path (expand-file-name
-               (format-time-string "clipboard-%Y%m%dT%H%M%S.png")
-               "~/org/notes/assets/")))
-    (if (and (executable-find "grim") (executable-find "slurp")
-             (= 0 (call-process "sh" nil nil nil "-c"
-                    (format "grim -g \"$(slurp)\" %s"
-                            (shell-quote-argument path)))))
-        (progn (insert (org-link-make-string (concat "file:" path)))
-               (org-display-inline-images))
-      (message "snip unavailable here - use your desktop snip tool, then C-c n p"))))
 
 (with-eval-after-load 'org
   (require 'ox-md)
@@ -113,9 +136,9 @@ paste with \\[yank-media] (C-c n p) instead."
   (setopt org-babel-load-languages '((emacs-lisp . t) (shell . t) (dot . t))
           org-confirm-babel-evaluate nil
           ;; per-note curated files (C-c C-a): id-hashed dirs in notes/
-          org-attach-id-dir "~/org/notes/attachments/"
+          org-attach-id-dir my/attachments-dir
           ;; pasted/dropped images (C-c n p) land in assets/, absolute links
-          org-yank-image-save-method "~/org/notes/assets/")
+          org-yank-image-save-method my/assets-dir)
 
   ;; paste an image from the clipboard into the current note
   (keymap-set org-mode-map "C-c n p" #'yank-media)
@@ -132,13 +155,6 @@ paste with \\[yank-media] (C-c n p) instead."
                         :html-scale 1.0))
   (add-hook 'org-mode-hook #'org-latex-preview-mode))
 
-;; ================ Keybindings (autoloaded, load on first press) ================
-
-(keymap-global-set "C-c l" #'org-latex-preview)
-(keymap-global-set "C-c n j" #'denote-journal-new-or-existing-entry)
-(keymap-global-set "C-c n i" #'denote-roam-insert-or-create-node)
-(keymap-global-set "C-c n o" #'denote-roam-find-or-create-node)
-(keymap-global-set "C-c n u" #'denote-roam-dired-unlinked)
 
 (provide 'setup-notes)
 ;;; setup-notes.el ends here
