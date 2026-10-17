@@ -1,4 +1,4 @@
-;;; setup-notes.el --- Org notes: denote + org-roam via denote-roam -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
 
 ;; Layout:
 ;;   ~/org/notes/         denote + org-roam (all knowledge: math, eng, uni, ...)
@@ -20,6 +20,8 @@
    (expand-file-name (or (getenv "ORG") "~/org")))
   "Org root directory, taken from $ORG (falls back to ~/org).")
 
+(defalias 'my/org (getenv "ORG"))
+
 (defconst my/notes-dir       (file-name-concat my/org-root "notes/"))
 (defconst my/journal-dir     (file-name-concat my/notes-dir "journal/"))
 (defconst my/assets-dir      (file-name-concat my/notes-dir "assets/"))
@@ -33,7 +35,7 @@
 
 ;; ================ Keybindings (autoloaded, load on first press) ================
 
-(keymap-global-set "C-c l" #'org-latex-preview)
+(keymap-global-set "C-c l"   #'org-latex-preview)
 (keymap-global-set "C-c n j" #'denote-journal-new-or-existing-entry)
 (keymap-global-set "C-c n i" #'denote-roam-insert-or-create-node)
 (keymap-global-set "C-c n o" #'denote-roam-find-or-create-node)
@@ -98,42 +100,39 @@ paste with \\[yank-media] (C-c n p) instead."
 
 ;; ================ Options (set BEFORE anything loads) ================
 
+
 (setopt org-directory my/org-root
         org-edit-src-content-indentation 1
         org-export-babel-evaluate nil
         org-image-actual-width nil
-        ;; denote
+	
         denote-directory my/notes-dir
         denote-known-keywords '("emacs" "work" "idea" "math" "uni")
         denote-infer-keywords t
         denote-sort-keywords t
         denote-prompts '(title keywords)
-        ;; dailies (denote-journal): subdir of denote-directory; denote-roam
-        ;; skips :ID: insertion there, so dailies never enter the roam graph
         denote-journal-directory my/journal-dir
-        ;; denote-roam / org-roam (db path pinned: org-roam derives it
-        ;; from `org-roam-directory' at load time, so set it explicitly)
-        denote-roam-directory my/notes-dir
-        org-roam-db-location (file-name-concat my/notes-dir "org-roam.db"))
+	
+        org-roam-db-location (file-name-concat my/notes-dir "org-roam.db")
+        denote-roam-directory my/notes-dir)
 
 ;; ================ First-use activation ================
+(require 'org-roam)
+(require 'denote)
+(require 'denote-roam)
 
-;; Runs once, when the first denote-roam command loads the stack:
-;; the mode forces org file-type, syncs denote/org-roam directories to
-;; `denote-roam-directory' and installs the :ID:-insertion hook; then
-;; the roam db starts and ~/org/notes gets indexed.
-(with-eval-after-load 'denote-roam
-  (denote-roam-mode 1)
-  (org-roam-db-autosync-mode 1)
-  (org-roam-db-sync))
-
+(denote-roam-mode 1)
+(org-roam-db-autosync-mode 1)
+(org-roam-db-sync)
 
 (with-eval-after-load 'org
   (require 'ox-md)
 
   ;; babel artifacts & pasted images -> notes/assets/ (non-org files:
   ;; invisible to the roam graph and to C-c n u)
-  (setopt org-babel-load-languages '((emacs-lisp . t) (shell . t) (dot . t))
+  (setopt org-babel-load-languages '((emacs-lisp . t)
+				     (shell . t)
+				     (dot . t))
           org-confirm-babel-evaluate nil
           ;; per-note curated files (C-c C-a): id-hashed dirs in notes/
           org-attach-id-dir my/attachments-dir
