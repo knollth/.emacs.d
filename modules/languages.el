@@ -18,25 +18,30 @@
 
 ;; ------------------ Configuration Languages --------------
 
-(straight-use-package 'nix-mode)
-(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
-(my/eglot-add-server 'nix-mode '("nixd"))
+(straight-use-package 'nix-ts-mode)
+(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode))
+(my/eglot-add-server 'nix-ts-mode '("nixd"))
 (add-hook 'nix-mode-hook #'apheleia-mode)
+(add-to-list 'treesit-language-source-alist
+             '(nix "https://github.com/nix-community/tree-sitter-nix"))
+
 
 (straight-use-package 'kdl-mode)
+(add-to-list 'treesit-language-source-alist
+             '(kdl "https://github.com/tree-sitter-grammars/tree-sitter-kdl"))
+
+
 
 ;; ----- yaml -----
 (straight-use-package 'yaml-pro)
 (straight-use-package 'yaml-mode)
-
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+
 (add-hook 'yaml-ts-mode-hook
 	  (lambda ()
 	    (yaml-pro-ts-mode)
 	    (require 'yaml-mode)
 	    (setq-local indent-line-function #'yaml-indent-line)))
-
-	    
 
 (add-to-list 'treesit-language-source-alist
              '(yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
@@ -50,7 +55,6 @@
 (straight-use-package 'just-ts-mode)
 (add-to-list 'treesit-language-source-alist
              '(just "https://github.com/casey/tree-sitter-just"))
-
 
 
 (straight-use-package 'dockerfile-mode)
